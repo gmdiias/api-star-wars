@@ -1,16 +1,15 @@
 package com.gmdiias.apistarwars.planeta;
 
+import java.io.Serializable;
+
 public class PlanetaDTO {
+
 	private Long id;
 	private Long version;
 	private String nome;
 	private String clima;
 	private String terreno;
 	
-	public PlanetaDTO() {
-		
-	}
-
 	public Long getId() {
 		return id;
 	}
