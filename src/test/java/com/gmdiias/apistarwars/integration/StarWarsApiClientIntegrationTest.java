@@ -21,17 +21,17 @@ import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
 import com.gmdiias.apistarwars.dto.PageableDTO;
 import com.gmdiias.apistarwars.dto.PlanetSwDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
-import com.gmdiias.apistarwars.service.StarWarsRestAPiService;
+import com.gmdiias.apistarwars.service.StarWarsApiClient;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 @SpringBootTest
-public class StarWarsRestServiceIntegrationTest extends ApiStarWarsApplicationTests {
+public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTests {
 
 	private MockWebServer mockWebServer;
 
 	@Autowired
-	private StarWarsRestAPiService starWarsService;
+	private StarWarsApiClient starWarsService;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -122,6 +122,21 @@ public class StarWarsRestServiceIntegrationTest extends ApiStarWarsApplicationTe
 		});
 		String messageExpected = "Mais de um planeta encontrado a API do Star Wars com esse nome.";
 		assertTrue(exception.getMessage().equals(messageExpected));
+	}
+	
+	@Test
+	void requestWithIanternalServerErrorTest() throws ServiceException {
+
+		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
+		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
+
+		mockWebServer.enqueue(new MockResponse().setStatus("HTTP/1.1 500 Internal server error"));
+
+		Exception exception = assertThrows(ServiceException.class, () -> {
+			starWarsService.getAllPlanets();
+		});
+		String messageExpected = "Erro: 500 Internal Server";
+		assertTrue(exception.getMessage().contains(messageExpected));
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.gmdiias.apistarwars.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PlanetSwDTO {
 
@@ -10,7 +11,6 @@ public class PlanetSwDTO {
 	private String climate;
 	private String terrain;
 	private List<String> films;
-	private Long numFilmAppearances;
 
 	public Long getId() {
 		return id;
@@ -61,11 +61,7 @@ public class PlanetSwDTO {
 	}
 
 	public Long getNumFilmAppearances() {
-		return numFilmAppearances;
-	}
-
-	public void setNumFilmAppearances(Long numFilmAppearances) {
-		this.numFilmAppearances = numFilmAppearances;
+		return Objects.nonNull(films) ? Long.valueOf(films.size()) : 0;
 	}
 
 }

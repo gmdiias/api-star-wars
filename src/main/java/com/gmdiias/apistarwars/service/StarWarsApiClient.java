@@ -11,17 +11,12 @@ import com.gmdiias.apistarwars.dto.PlanetSwDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
 
 @Service
-public class StarWarsRestAPiService {
+public class StarWarsApiClient {
 
-	private static final Logger LOG = LogManager.getLogger(StarWarsRestAPiService.class);
+	private static final Logger LOG = LogManager.getLogger(StarWarsApiClient.class);
 	private static final String URL_SWAPI_API = "https://swapi.dev/api/";
 	private WebClient webClient = WebClient.create(URL_SWAPI_API);
 
-	public Long get(String name) throws ServiceException {
-		PlanetSwDTO planet = getPlanetByName(name);
-		return (long) planet.getFilms().size();
-	}
-	
 	public PlanetSwDTO getPlanetByName(String name) throws ServiceException {
 		PageableDTO retorno = realizaRequisicaoWithFilter(name);
 
