@@ -3,7 +3,7 @@ package com.gmdiias.apistarwars.webclient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.gmdiias.apistarwars.planeta.PlanetaDTO;
+import com.gmdiias.apistarwars.planet.PlanetDTO;
 
 @Component
 public class WebClientRef {
@@ -11,10 +11,10 @@ public class WebClientRef {
 	private static final String URL_SWAPI_API = "https://swapi.dev/api/";
 	private WebClient webClient = WebClient.create(URL_SWAPI_API);
 
-	public PlanetaDTO getPlanetaByNome(String nomePlaneta) {
+	public PlanetDTO getPlanetByName(String name) {
 
 		PageableDTO retorno = webClient.get()
-				.uri(builder -> builder.path("planets/").queryParam("search", nomePlaneta).build()).retrieve()
+				.uri(builder -> builder.path("planets/").queryParam("search", name).build()).retrieve()
 				.bodyToMono(PageableDTO.class).block();
 
 		if (retorno.getCount() < 1) {

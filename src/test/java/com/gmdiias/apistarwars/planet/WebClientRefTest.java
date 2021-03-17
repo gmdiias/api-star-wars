@@ -1,6 +1,4 @@
-package com.gmdiias.apistarwars.planeta;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+package com.gmdiias.apistarwars.planet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,9 @@ public class WebClientRefTest {
 
 	@Test
 	public void dtoParaEntityTest() {
-		webCliente.getPlanetaByNome("Tatooine");
+		PlanetDTO planet = webCliente.getPlanetByName("Tatooine");
+		
+		System.out.println(planet);
 	}
 	
 

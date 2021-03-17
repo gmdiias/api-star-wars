@@ -1,4 +1,4 @@
-package com.gmdiias.apistarwars.planeta;
+package com.gmdiias.apistarwars.planet;
 
 import java.util.Optional;
 
@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public interface PlanetaRepository extends JpaRepository<Planeta, Long> {
+public interface PlanetRepository extends JpaRepository<Planet, Long> {
 
-	Optional<Planeta> findByNomeIgnoreCase(String nomePlaneta);
+	Optional<Planet> findByNameIgnoreCase(String name);
 
 }
