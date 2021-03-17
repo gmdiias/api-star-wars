@@ -1,0 +1,2 @@
+INSERT INTO starwars.tb_planeta (id, clima, dataatualizacao, datacriacao, nome, terreno, version) VALUES(1, 'temperate, tropical', '2021-03-16 23:02:18', '2021-03-16 23:02:18', 'Yavin IV', 'jungle, rainforests', 0);
+INSERT INTO starwars.tb_planeta (id, clima, dataatualizacao, datacriacao, nome, terreno, version) VALUES(2, 'arid', '2021-03-16 23:06:48', '2021-03-16 23:06:48', 'Tatooine', 'desert', 0);
