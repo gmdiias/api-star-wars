@@ -1,13 +1,11 @@
-package com.gmdiias.apistarwars.webclient;
+package com.gmdiias.apistarwars.dto;
 
 import java.util.List;
-
-import com.gmdiias.apistarwars.planet.PlanetDTO;
 
 public class PageableDTO {
 
 	private Long count;
-	private List<PlanetDTO> results;
+	private List<PlanetSwDTO> results;
 
 	public Long getCount() {
 		return count;
@@ -17,11 +15,11 @@ public class PageableDTO {
 		this.count = count;
 	}
 
-	public List<PlanetDTO> getResults() {
+	public List<PlanetSwDTO> getResults() {
 		return results;
 	}
 
-	public void setResults(List<PlanetDTO> results) {
+	public void setResults(List<PlanetSwDTO> results) {
 		this.results = results;
 	}
 }

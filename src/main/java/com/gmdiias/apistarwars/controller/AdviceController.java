@@ -1,4 +1,4 @@
-package com.gmdiias.apistarwars.shared;
+package com.gmdiias.apistarwars.controller;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

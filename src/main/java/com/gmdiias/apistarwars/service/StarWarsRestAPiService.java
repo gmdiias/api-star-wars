@@ -1,4 +1,4 @@
-package com.gmdiias.apistarwars.webclient;
+package com.gmdiias.apistarwars.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 
+import com.gmdiias.apistarwars.dto.PageableDTO;
+import com.gmdiias.apistarwars.dto.PlanetSwDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
-import com.gmdiias.apistarwars.planet.PlanetDTO;
 
 @Service
 public class StarWarsRestAPiService {
@@ -16,7 +17,12 @@ public class StarWarsRestAPiService {
 	private static final String URL_SWAPI_API = "https://swapi.dev/api/";
 	private WebClient webClient = WebClient.create(URL_SWAPI_API);
 
-	public PlanetDTO getPlanetByName(String name) throws ServiceException {
+	public Long get(String name) throws ServiceException {
+		PlanetSwDTO planet = getPlanetByName(name);
+		return (long) planet.getFilms().size();
+	}
+	
+	public PlanetSwDTO getPlanetByName(String name) throws ServiceException {
 		PageableDTO retorno = realizaRequisicaoWithFilter(name);
 
 		if (retorno.getCount() > 1) {

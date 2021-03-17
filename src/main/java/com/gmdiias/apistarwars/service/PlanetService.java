@@ -1,4 +1,4 @@
-package com.gmdiias.apistarwars.planet;
+package com.gmdiias.apistarwars.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,10 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gmdiias.apistarwars.dto.PlanetDTO;
+import com.gmdiias.apistarwars.entity.Planet;
 import com.gmdiias.apistarwars.exception.EntityNotFoundException;
+import com.gmdiias.apistarwars.exception.ServiceException;
+import com.gmdiias.apistarwars.mapper.PlanetMapper;
+import com.gmdiias.apistarwars.repository.PlanetRepository;
 
 @Service
-@Transactional
 public class PlanetService {
 
 	@Autowired
@@ -19,6 +23,9 @@ public class PlanetService {
 
 	@Autowired
 	private PlanetRepository repository;
+	
+	@Autowired
+	private StarWarsRestAPiService swApiService;
 
 	public PlanetDTO getById(Long id) {
 		Optional<Planet> planet = repository.findById(id);
@@ -33,12 +40,21 @@ public class PlanetService {
 		return repository.findAll().stream().map(mapper::toPlanet).collect(Collectors.toList());
 	}
 
+	@Transactional
 	public PlanetDTO post(PlanetDTO dto) {
-		Planet planeta = mapper.toPlanet(dto);
-		Planet planetaSaved = repository.save(planeta);
-		return mapper.toPlanet(planetaSaved);
+		try {
+			Planet planeta = mapper.toPlanet(dto);
+			Long qtdFilms = swApiService.get(planeta.getName());
+			planeta.setNumFilmAppearances(qtdFilms);
+			Planet planetaSaved = repository.save(planeta);
+			return mapper.toPlanet(planetaSaved);
+		} catch (ServiceException e) {
+			throw new EntityNotFoundException("Entidade não localizada.");
+		}
+		
 	}
 
+	@Transactional
 	public void deleteById(Long id) {
 		Optional<Planet> planet = repository.findById(id);
 

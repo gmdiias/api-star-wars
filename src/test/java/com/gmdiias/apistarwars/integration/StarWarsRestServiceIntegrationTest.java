@@ -1,4 +1,4 @@
-package com.gmdiias.apistarwars.planet;
+package com.gmdiias.apistarwars.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,14 +18,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
+import com.gmdiias.apistarwars.dto.PageableDTO;
+import com.gmdiias.apistarwars.dto.PlanetSwDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
-import com.gmdiias.apistarwars.webclient.PageableDTO;
-import com.gmdiias.apistarwars.webclient.StarWarsRestAPiService;
+import com.gmdiias.apistarwars.service.StarWarsRestAPiService;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
 @SpringBootTest
-public class StarWarsRestAPiServiceTest extends ApiStarWarsApplicationTests {
+public class StarWarsRestServiceIntegrationTest extends ApiStarWarsApplicationTests {
 
 	private MockWebServer mockWebServer;
 
@@ -42,7 +43,7 @@ public class StarWarsRestAPiServiceTest extends ApiStarWarsApplicationTests {
 	}
 
 	@Test
-	public void requestWithInternalServerErrorTest() throws ServiceException {
+	void requestWithInternalServerErrorTest() throws ServiceException {
 
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
@@ -57,7 +58,7 @@ public class StarWarsRestAPiServiceTest extends ApiStarWarsApplicationTests {
 	}
 
 	@Test
-	public void requestByNamePlanetWithNoEntityTest() throws ServiceException, JsonProcessingException {
+	void requestByNamePlanetWithNoEntityTest() throws ServiceException, JsonProcessingException {
 
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
@@ -82,7 +83,7 @@ public class StarWarsRestAPiServiceTest extends ApiStarWarsApplicationTests {
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
 
-		PlanetDTO planet = new PlanetDTO();
+		PlanetSwDTO planet = new PlanetSwDTO();
 		planet.setName("Tatooine");
 
 		PageableDTO serverReturn = new PageableDTO();
@@ -92,7 +93,7 @@ public class StarWarsRestAPiServiceTest extends ApiStarWarsApplicationTests {
 		mockWebServer.enqueue(new MockResponse().setResponseCode(200).addHeader("Content-Type", "application/json")
 				.setBody(objectMapper.writeValueAsString(serverReturn)));
 
-		PlanetDTO retorno = starWarsService.getPlanetByName("Tatooine");
+		PlanetSwDTO retorno = starWarsService.getPlanetByName("Tatooine");
 		assertNotNull(retorno);
 		assertEquals(planet.getName(), retorno.getName());
 	}
@@ -103,10 +104,10 @@ public class StarWarsRestAPiServiceTest extends ApiStarWarsApplicationTests {
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
 
-		PlanetDTO planetTatooiene = new PlanetDTO();
+		PlanetSwDTO planetTatooiene = new PlanetSwDTO();
 		planetTatooiene.setName("Tatooine");
 
-		PlanetDTO planet2 = new PlanetDTO();
+		PlanetSwDTO planet2 = new PlanetSwDTO();
 		planetTatooiene.setName("Tat");
 
 		PageableDTO serverReturn = new PageableDTO();

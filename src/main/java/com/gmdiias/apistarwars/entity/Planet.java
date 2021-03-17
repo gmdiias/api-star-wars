@@ -1,4 +1,4 @@
-package com.gmdiias.apistarwars.planet;
+package com.gmdiias.apistarwars.entity;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.gmdiias.apistarwars.planet;
+package com.gmdiias.apistarwars.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
+import com.gmdiias.apistarwars.dto.PlanetDTO;
+import com.gmdiias.apistarwars.entity.Planet;
 
 @SpringBootTest
-public class PlanetMapperIntegrationTest extends ApiStarWarsApplicationTests {
+public class PlanetMapperTest extends ApiStarWarsApplicationTests {
 
 	@Autowired
 	private PlanetMapper mapper;

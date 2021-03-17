@@ -1,4 +1,4 @@
-package com.gmdiias.apistarwars.planet;
+package com.gmdiias.apistarwars.controller;
 
 import java.util.List;
 
@@ -13,12 +13,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gmdiias.apistarwars.dto.PlanetDTO;
+import com.gmdiias.apistarwars.service.PlanetService;
+
 @RestController
 @RequestMapping("/planet")
 public class PlanetController {
 
 	@Autowired
-	PlanetService service;
+	private PlanetService service;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<PlanetDTO> getById(@PathVariable("id") Long id){
