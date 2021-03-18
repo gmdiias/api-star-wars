@@ -3,7 +3,7 @@ package com.gmdiias.apistarwars.dto;
 import java.util.List;
 import java.util.Objects;
 
-public class PlanetApDTO {
+public class PlanetStarWarsApiDTO {
 
 	private Long id;
 	private Long version;

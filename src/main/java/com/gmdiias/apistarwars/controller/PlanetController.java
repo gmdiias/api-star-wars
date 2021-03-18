@@ -13,8 +13,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gmdiias.apistarwars.dto.PageableStarWarsApiDTO;
 import com.gmdiias.apistarwars.dto.PlanetDTO;
+import com.gmdiias.apistarwars.exception.ServiceException;
 import com.gmdiias.apistarwars.service.PlanetService;
+import com.gmdiias.apistarwars.webclient.StarWarsApiClient;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping("/planet")
@@ -23,28 +30,49 @@ public class PlanetController {
 	@Autowired
 	private PlanetService service;
 	
+	@Autowired
+	private StarWarsApiClient swClient;
+
 	@GetMapping("/{id}")
-	public ResponseEntity<PlanetDTO> getById(@PathVariable("id") Long id){
+	@ApiResponse(responseCode = "200", description = "Planeta encontrado e retornado com sucesso.")
+	@ApiResponse(responseCode = "400", description = "Planeta não encontrado no banco de dados.")
+	@Operation(summary = "Busca um planeta através de seu ID.")
+	public ResponseEntity<PlanetDTO> getById(
+			@PathVariable("id") @Parameter(description = "ID do planeta a ser buscado.") Long id) {
 		PlanetDTO planeta = service.getById(id);
 		return ResponseEntity.ok(planeta);
 	}
 
 	@GetMapping
-	public List<PlanetDTO> findAll(){
-		List<PlanetDTO> planetasFind = service.findAll();
-		return planetasFind;
+	@ApiResponse(responseCode = "200", description = "Planetas retornados com sucesso.")
+	@Operation(summary = "Busca todos os planetas salvos no banco de dados.")
+	public List<PlanetDTO> findAll() {
+		return service.findAll();
 	}
 	
+	@GetMapping
+	@ApiResponse(responseCode = "200", description = "Planetas retornados com sucesso.")
+	@Operation(summary = "Busca todos os planetas da API do Star Wars.")
+	public PageableStarWarsApiDTO findAllStarWarsApi() throws ServiceException{
+		return swClient.findAllPlanets();
+	}
+
 	@PostMapping
+	@ApiResponse(responseCode = "201", description = "Planetas adicionado com sucesso.")
+	@ApiResponse(responseCode = "400", description = "Ocorreu um erro ao adicionar o planeta.")
+	@Operation(summary = "Adiciona um novo planeta no banco de dados.")
 	public ResponseEntity<PlanetDTO> post(@RequestBody PlanetDTO planeta) {
 		PlanetDTO planetaSaved = service.post(planeta);
 		return ResponseEntity.status(HttpStatus.CREATED).body(planetaSaved);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<PlanetDTO> deleteById(@PathVariable("id") Long id){
+	@ApiResponse(responseCode = "200", description = "Planetas removido com sucesso.")
+	@ApiResponse(responseCode = "400", description = "Ocorreu um erro ao remover o planeta.")
+	@Operation(summary = "Remove um planeta do banco de dados.")
+	public ResponseEntity<Void> deleteById(@PathVariable("id") Long id) {
 		service.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
-	
+
 }

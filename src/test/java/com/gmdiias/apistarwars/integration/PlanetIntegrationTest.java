@@ -28,8 +28,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
 import com.gmdiias.apistarwars.dto.PlanetDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
-import com.gmdiias.apistarwars.dto.PlanetApDTO;
-import com.gmdiias.apistarwars.service.StarWarsApiClient;
+import com.gmdiias.apistarwars.webclient.StarWarsApiClient;
+import com.gmdiias.apistarwars.dto.PlanetStarWarsApiDTO;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -48,11 +48,11 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 	@Test
 	@Sql("/dataSetPlanetas.sql")
 	public void getPlanetByIdTest() throws Exception {
-		MvcResult result = mvc.perform(get("/planet/{id}", 1)).andExpect(status().isOk()).andReturn();
-		PlanetDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), PlanetDTO.class);
+		MvcResult response = mvc.perform(get("/planet/{id}", 1)).andExpect(status().isOk()).andReturn();
+		PlanetDTO planet = objectMapper.readValue(response.getResponse().getContentAsString(), PlanetDTO.class);
 
-		assertEquals(1, response.getId());
-		assertEquals("Yavin IV", response.getName(), "Nome do planeta salvo é diferente do esperado.");
+		assertEquals(1, planet.getId(), "ID é diferente do informado.");
+		assertEquals("Yavin IV", planet.getName(), "Nome do planeta salvo é diferente do esperado.");
 	}
 
 	@Test
@@ -63,11 +63,11 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 	@Test
 	@Sql("/dataSetPlanetas.sql")
 	public void findAllTest() throws Exception {
-		MvcResult result = mvc.perform(get("/planet/")).andExpect(status().isOk()).andReturn();
-		List<PlanetDTO> response = objectMapper.readValue(result.getResponse().getContentAsString(),
+		MvcResult response = mvc.perform(get("/planet/")).andExpect(status().isOk()).andReturn();
+		List<PlanetDTO> listPlanet = objectMapper.readValue(response.getResponse().getContentAsString(),
 				new TypeReference<List<PlanetDTO>>() {
 				});
-		assertEquals(2, response.size());
+		assertEquals(2, listPlanet.size(), "Número de entidades retornas é diferente do esperado.");
 	}
 
 	@Test
@@ -77,20 +77,21 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 		planet.setClimate("temperate, tropical");
 		planet.setTerrain("jungle, rainforests");
 
-		PlanetApDTO planetMock = new PlanetApDTO();
+		PlanetStarWarsApiDTO planetMock = new PlanetStarWarsApiDTO();
 		planetMock.setFilms(Lists.list("http://swapi.dev/api/films/1/", "http://swapi.dev/api/films/2/",
 				"http://swapi.dev/api/films/3/"));
 
 		Mockito.when(planetService.getPlanetByName("Yavin IV")).thenReturn(planetMock);
 
-		MvcResult result = mvc.perform(post("/planet/").contentType(MediaType.APPLICATION_JSON)
+		MvcResult response = mvc.perform(post("/planet/").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(planet)).characterEncoding("utf-8")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
 
-		PlanetDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), PlanetDTO.class);
-		assertNotNull(response.getId(), "Entidade não possui ID, então não foi salva corretamente.");
-		assertEquals(planet.getName(), response.getName(), "Nome do planeta salvo é diferente do esperado.");
-		assertEquals(Long.valueOf(3), response.getNumFilmAppearances());
+		PlanetDTO planetResponse = objectMapper.readValue(response.getResponse().getContentAsString(), PlanetDTO.class);
+		assertNotNull(planetResponse.getId(), "Entidade não possui ID, então não foi salva corretamente.");
+		assertEquals(planet.getName(), planetResponse.getName(), "Nome do planeta salvo é diferente do esperado.");
+		assertEquals(Long.valueOf(3), planetResponse.getNumFilmAppearances(),
+				"Número de filmes é diferente do esperado.");
 	}
 
 	@Test
@@ -112,11 +113,11 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 	@Test
 	@Sql("/dataSetPlanetas.sql")
 	public void deletePlanetByIdTest() throws Exception {
-		MvcResult result = mvc.perform(get("/planet/{id}", 1)).andExpect(status().isOk()).andReturn();
-		PlanetDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), PlanetDTO.class);
+		MvcResult response = mvc.perform(get("/planet/{id}", 1)).andExpect(status().isOk()).andReturn();
+		PlanetDTO planet = objectMapper.readValue(response.getResponse().getContentAsString(), PlanetDTO.class);
 
-		assertEquals(1, response.getId());
-		assertEquals("Yavin IV", response.getName(), "Nome do planeta salvo é diferente do esperado.");
+		assertEquals(1, planet.getId());
+		assertEquals("Yavin IV", planet.getName(), "Nome do planeta salvo é diferente do esperado.");
 
 		mvc.perform(delete("/planet/{id}", 1)).andExpect(status().isOk()).andReturn();
 		mvc.perform(get("/planet/{id}", 1)).andExpect(status().isBadRequest())

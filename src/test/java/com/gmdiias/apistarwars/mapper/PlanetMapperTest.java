@@ -17,7 +17,7 @@ public class PlanetMapperTest extends ApiStarWarsApplicationTests {
 	private PlanetMapper mapper;
 
 	@Test
-	public void dtoParaEntityTest() {
+	public void dtoToEntityTest() {
 		PlanetDTO planetDto = new PlanetDTO();
 		planetDto.setName("Yavin IV");
 		planetDto.setClimate("temperate, tropical");
@@ -28,11 +28,12 @@ public class PlanetMapperTest extends ApiStarWarsApplicationTests {
 		assertEquals(planetEntity.getName(), planetDto.getName(), "Nome é diferente do informado.");
 		assertEquals(planetEntity.getClimate(), planetDto.getClimate(), "Clima é diferente do esperado.");
 		assertEquals(planetEntity.getTerrain(), planetDto.getTerrain(), "Terreno é diferente do esperado.");
-		assertEquals(planetEntity.getNumFilmAppearances(), planetDto.getNumFilmAppearances(), "Quantidade de films é diferente do esperado");
+		assertEquals(planetEntity.getNumFilmAppearances(), planetDto.getNumFilmAppearances(),
+				"Quantidade de films é diferente do esperado");
 	}
 
 	@Test
-	public void entityParaDtoTest() {
+	public void entityToDtoTest() {
 		Planet planetEntity = new Planet();
 		planetEntity.setName("Tatooine");
 		planetEntity.setClimate("arid");
@@ -43,7 +44,8 @@ public class PlanetMapperTest extends ApiStarWarsApplicationTests {
 		assertEquals(planetEntity.getName(), planetDto.getName(), "Nome é diferente do informado.");
 		assertEquals(planetEntity.getClimate(), planetDto.getClimate(), "Clima é diferente do esperado.");
 		assertEquals(planetEntity.getTerrain(), planetDto.getTerrain(), "Terreno é diferente do esperado.");
-		assertEquals(planetDto.getNumFilmAppearances(), planetEntity.getNumFilmAppearances(), "Quantidade de films é diferente do esperado");
+		assertEquals(planetDto.getNumFilmAppearances(), planetEntity.getNumFilmAppearances(),
+				"Quantidade de films é diferente do esperado");
 	}
 
 }

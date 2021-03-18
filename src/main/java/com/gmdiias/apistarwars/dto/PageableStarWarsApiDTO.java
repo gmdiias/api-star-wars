@@ -2,10 +2,10 @@ package com.gmdiias.apistarwars.dto;
 
 import java.util.List;
 
-public class PageableApiDTO {
+public class PageableStarWarsApiDTO {
 
 	private Long count;
-	private List<PlanetApDTO> results;
+	private List<PlanetStarWarsApiDTO> results;
 
 	public Long getCount() {
 		return count;
@@ -15,11 +15,11 @@ public class PageableApiDTO {
 		this.count = count;
 	}
 
-	public List<PlanetApDTO> getResults() {
+	public List<PlanetStarWarsApiDTO> getResults() {
 		return results;
 	}
 
-	public void setResults(List<PlanetApDTO> results) {
+	public void setResults(List<PlanetStarWarsApiDTO> results) {
 		this.results = results;
 	}
 }

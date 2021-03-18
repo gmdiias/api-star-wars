@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gmdiias.apistarwars.dto.PlanetDTO;
-import com.gmdiias.apistarwars.dto.PlanetApDTO;
+import com.gmdiias.apistarwars.dto.PlanetStarWarsApiDTO;
 import com.gmdiias.apistarwars.entity.Planet;
 import com.gmdiias.apistarwars.exception.EntityNotFoundException;
 import com.gmdiias.apistarwars.exception.ServiceException;
 import com.gmdiias.apistarwars.mapper.PlanetMapper;
 import com.gmdiias.apistarwars.repository.PlanetRepository;
+import com.gmdiias.apistarwars.webclient.StarWarsApiClient;
 
 @Service
 public class PlanetService {
@@ -55,7 +56,7 @@ public class PlanetService {
 
 	private Long searchNumFilmPlanetAppearances(String namePlanet) {
 		try {
-			PlanetApDTO planet = swApiService.getPlanetByName(namePlanet);
+			PlanetStarWarsApiDTO planet = swApiService.getPlanetByName(namePlanet);
 			return planet.getNumFilmAppearances();
 		} catch (ServiceException e) {
 			LOG.error("Erro ao realizar busca do planeta na API externa. Erro: {}", e.getMessage());

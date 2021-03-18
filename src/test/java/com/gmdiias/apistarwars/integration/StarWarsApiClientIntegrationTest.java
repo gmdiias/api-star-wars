@@ -18,10 +18,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
-import com.gmdiias.apistarwars.dto.PageableApiDTO;
-import com.gmdiias.apistarwars.dto.PlanetApDTO;
+import com.gmdiias.apistarwars.dto.PageableStarWarsApiDTO;
+import com.gmdiias.apistarwars.dto.PlanetStarWarsApiDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
-import com.gmdiias.apistarwars.service.StarWarsApiClient;
+import com.gmdiias.apistarwars.webclient.StarWarsApiClient;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
@@ -54,7 +54,7 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 			starWarsService.getPlanetByName("Tatooine");
 		});
 		String messageExpected = "Erro: 500 Internal Server";
-		assertTrue(exception.getMessage().contains(messageExpected));
+		assertTrue(exception.getMessage().contains(messageExpected), "Mensagem da excessão não contém erro esperado.");
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
 
-		PageableApiDTO serverReturn = new PageableApiDTO();
+		PageableStarWarsApiDTO serverReturn = new PageableStarWarsApiDTO();
 		serverReturn.setCount(0l);
 		serverReturn.setResults(Lists.emptyList());
 
@@ -74,28 +74,28 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 			starWarsService.getPlanetByName("Tatooine");
 		});
 		String messageExpected = "Nenhum planeta encontrado encontrado na API do Star Wars com esse nome.";
-		assertTrue(exception.getMessage().equals(messageExpected));
+		assertEquals(messageExpected, exception.getMessage(), "Mensagem da excessão é diferente da esperada.");
 	}
-	
+
 	@Test
 	public void requestByNamePlanetWithEntityTest() throws ServiceException, JsonProcessingException {
 
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
 
-		PlanetApDTO planet = new PlanetApDTO();
+		PlanetStarWarsApiDTO planet = new PlanetStarWarsApiDTO();
 		planet.setName("Tatooine");
 
-		PageableApiDTO serverReturn = new PageableApiDTO();
+		PageableStarWarsApiDTO serverReturn = new PageableStarWarsApiDTO();
 		serverReturn.setCount(1l);
 		serverReturn.setResults(Lists.list(planet));
 
 		mockWebServer.enqueue(new MockResponse().setResponseCode(200).addHeader("Content-Type", "application/json")
 				.setBody(objectMapper.writeValueAsString(serverReturn)));
 
-		PlanetApDTO retorno = starWarsService.getPlanetByName("Tatooine");
+		PlanetStarWarsApiDTO retorno = starWarsService.getPlanetByName("Tatooine");
 		assertNotNull(retorno);
-		assertEquals(planet.getName(), retorno.getName());
+		assertEquals(planet.getName(), retorno.getName(), "Mensagem da excessão é diferente da esperada.");
 	}
 
 	@Test
@@ -104,15 +104,15 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
 
-		PlanetApDTO planetTatooiene = new PlanetApDTO();
+		PlanetStarWarsApiDTO planetTatooiene = new PlanetStarWarsApiDTO();
 		planetTatooiene.setName("Tatooine");
 
-		PlanetApDTO planet2 = new PlanetApDTO();
-		planetTatooiene.setName("Tat");
+		PlanetStarWarsApiDTO planetTat = new PlanetStarWarsApiDTO();
+		planetTat.setName("Tat");
 
-		PageableApiDTO serverReturn = new PageableApiDTO();
+		PageableStarWarsApiDTO serverReturn = new PageableStarWarsApiDTO();
 		serverReturn.setCount(2l);
-		serverReturn.setResults(Lists.list(planetTatooiene, planet2));
+		serverReturn.setResults(Lists.list(planetTatooiene, planetTat));
 
 		mockWebServer.enqueue(new MockResponse().setResponseCode(200).addHeader("Content-Type", "application/json")
 				.setBody(objectMapper.writeValueAsString(serverReturn)));
@@ -121,9 +121,9 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 			starWarsService.getPlanetByName("T");
 		});
 		String messageExpected = "Mais de um planeta encontrado a API do Star Wars com esse nome.";
-		assertTrue(exception.getMessage().equals(messageExpected));
+		assertEquals(messageExpected, exception.getMessage(), "Mensagem da excessão é diferente da esperada.");
 	}
-	
+
 	@Test
 	void requestWithIanternalServerErrorTest() throws ServiceException {
 
@@ -136,7 +136,7 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 			starWarsService.findAllPlanets();
 		});
 		String messageExpected = "Erro: 500 Internal Server";
-		assertTrue(exception.getMessage().contains(messageExpected));
+		assertTrue(exception.getMessage().contains(messageExpected), "Mensagem da excessão não contém erro esperado.");
 	}
 
 }
