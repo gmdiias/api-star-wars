@@ -133,7 +133,7 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 		mockWebServer.enqueue(new MockResponse().setStatus("HTTP/1.1 500 Internal server error"));
 
 		Exception exception = assertThrows(ServiceException.class, () -> {
-			starWarsService.findAllPlanets();
+			starWarsService.findAllPlanets("", 1);
 		});
 		String messageExpected = "Erro: 500 Internal Server";
 		assertTrue(exception.getMessage().contains(messageExpected), "Mensagem da excessão não contém erro esperado.");

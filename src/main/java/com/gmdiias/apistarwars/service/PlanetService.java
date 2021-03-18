@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gmdiias.apistarwars.dto.PageableStarWarsApiDTO;
-import com.gmdiias.apistarwars.dto.PlanetDTO;
+import com.gmdiias.apistarwars.dto.PlanetRequestDTO;
+import com.gmdiias.apistarwars.dto.PlanetResponseDTO;
 import com.gmdiias.apistarwars.dto.PlanetStarWarsApiDTO;
 import com.gmdiias.apistarwars.entity.Planet;
 import com.gmdiias.apistarwars.exception.EntityNotFoundException;
@@ -30,7 +31,7 @@ public class PlanetService {
 		this.swApiService = swApiService;
 	}
 
-	public PlanetDTO getById(Long id) {
+	public PlanetResponseDTO getById(Long id) {
 		Optional<Planet> planet = repository.findById(id);
 		if (planet.isEmpty()) {
 			throw new EntityNotFoundException("Nenhuma entidade localizada com o ID informado.");
@@ -38,20 +39,20 @@ public class PlanetService {
 		return mapper.toPlanet(planet.get());
 	}
 
-	public PlanetDTO getByName(String name) {
-		Optional<Planet> planet = repository.findByNameIgnoreCase(name);
+	public PlanetResponseDTO getByName(String name) {
+		Optional<Planet> planet = repository.findFirstByNameStartsWithIgnoreCaseOrderByNameAsc(name);
 		if (planet.isEmpty()) {
 			throw new EntityNotFoundException("Nenhuma entidade localizada com o nome informado.");
 		}
 		return mapper.toPlanet(planet.get());
 	}
 
-	public List<PlanetDTO> findAll() {
+	public List<PlanetResponseDTO> findAll() {
 		return repository.findAll().stream().map(mapper::toPlanet).collect(Collectors.toList());
 	}
 
 	@Transactional
-	public PlanetDTO post(PlanetDTO dto) {
+	public PlanetResponseDTO post(PlanetRequestDTO dto) {
 		Planet planeta = mapper.toPlanet(dto);
 		Long numFilmPlanetAppearances = searchNumFilmPlanetAppearances(planeta.getName());
 		planeta.setNumFilmAppearances(numFilmPlanetAppearances);
@@ -74,7 +75,7 @@ public class PlanetService {
 		repository.delete(planet.get());
 	}
 
-	public PageableStarWarsApiDTO findAllInSwApi() {
-		return swApiService.findAllPlanets();
+	public PageableStarWarsApiDTO findAllInSwApi(String filter, int page) {
+		return swApiService.findAllPlanets(filter, page);
 	}
 }

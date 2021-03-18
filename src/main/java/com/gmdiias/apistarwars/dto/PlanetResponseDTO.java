@@ -1,6 +1,6 @@
 package com.gmdiias.apistarwars.dto;
 
-public class PlanetDTO {
+public class PlanetResponseDTO {
 
 	private Long id;
 	private Long version;

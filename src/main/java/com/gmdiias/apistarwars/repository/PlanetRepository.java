@@ -10,6 +10,6 @@ import com.gmdiias.apistarwars.entity.Planet;
 @Transactional
 public interface PlanetRepository extends JpaRepository<Planet, Long> {
 
-	Optional<Planet> findByNameIgnoreCase(String name);
+	Optional<Planet> findFirstByNameStartsWithIgnoreCaseOrderByNameAsc(String name);
 
 }

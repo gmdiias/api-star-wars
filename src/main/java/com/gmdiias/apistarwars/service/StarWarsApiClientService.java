@@ -18,23 +18,23 @@ public class StarWarsApiClientService {
 	private WebClient webClient = WebClient.create(URL_SWAPI_API);
 
 	public PlanetStarWarsApiDTO getPlanetByName(String name) throws ServiceException {
-		PageableStarWarsApiDTO retorno = performsRequestToExternalApi(name);
+		PageableStarWarsApiDTO retorno = performsRequestToExternalApi(name, 1);
 
 		if (retorno.getCount() > 1) {
 			throw new ServiceException("Mais de um planeta encontrado a API do Star Wars com esse nome.");
 		}
-		return retorno.getResults().stream().findFirst()
-				.orElseThrow(() -> new ServiceException(
-						"Nenhum planeta encontrado encontrado na API do Star Wars com esse nome."));
+		return retorno.getResults().stream().findFirst().orElseThrow(
+				() -> new ServiceException("Nenhum planeta encontrado encontrado na API do Star Wars com esse nome."));
 	}
 
-	public PageableStarWarsApiDTO findAllPlanets() throws ServiceException {
-		return performsRequestToExternalApi("");
+	public PageableStarWarsApiDTO findAllPlanets(String filter, int page) throws ServiceException {
+		return performsRequestToExternalApi(filter, page);
 	}
 
-	private PageableStarWarsApiDTO performsRequestToExternalApi(String name) throws ServiceException {
+	private PageableStarWarsApiDTO performsRequestToExternalApi(String name, int page) throws ServiceException {
 		try {
-			return webClient.get().uri(builder -> builder.path("planets/").queryParam("search", name).build())
+			return webClient.get().uri(
+					builder -> builder.path("planets/").queryParam("search", name).queryParam("page", page).build())
 					.retrieve().bodyToMono(PageableStarWarsApiDTO.class).block();
 		} catch (WebClientException e) {
 			LOG.error("Ocorreu um erro ao realizar a requição. Erro: {}", e.getMessage());

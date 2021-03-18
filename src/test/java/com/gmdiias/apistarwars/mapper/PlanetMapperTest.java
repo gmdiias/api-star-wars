@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
-import com.gmdiias.apistarwars.dto.PlanetDTO;
+import com.gmdiias.apistarwars.dto.PlanetResponseDTO;
 import com.gmdiias.apistarwars.entity.Planet;
 
 @SpringBootTest
@@ -18,7 +18,7 @@ public class PlanetMapperTest extends ApiStarWarsApplicationTests {
 
 	@Test
 	public void dtoToEntityTest() {
-		PlanetDTO planetDto = new PlanetDTO();
+		PlanetResponseDTO planetDto = new PlanetResponseDTO();
 		planetDto.setName("Yavin IV");
 		planetDto.setClimate("temperate, tropical");
 		planetDto.setTerrain("jungle, rainforests");
@@ -40,7 +40,7 @@ public class PlanetMapperTest extends ApiStarWarsApplicationTests {
 		planetEntity.setTerrain("desert");
 		planetEntity.setNumFilmAppearances(Long.valueOf(3));
 
-		PlanetDTO planetDto = mapper.toPlanet(planetEntity);
+		PlanetResponseDTO planetDto = mapper.toPlanet(planetEntity);
 		assertEquals(planetEntity.getName(), planetDto.getName(), "Nome é diferente do informado.");
 		assertEquals(planetEntity.getClimate(), planetDto.getClimate(), "Clima é diferente do esperado.");
 		assertEquals(planetEntity.getTerrain(), planetDto.getTerrain(), "Terreno é diferente do esperado.");

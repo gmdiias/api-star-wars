@@ -1,14 +1,10 @@
 package com.gmdiias.apistarwars.dto;
 
-import java.util.List;
-import java.util.Objects;
-
-public class PlanetStarWarsApiDTO {
+public class PlanetRequestDTO {
 
 	private String name;
 	private String climate;
 	private String terrain;
-	private List<String> films;
 
 	public String getName() {
 		return name;
@@ -32,18 +28,6 @@ public class PlanetStarWarsApiDTO {
 
 	public void setTerrain(String terrain) {
 		this.terrain = terrain;
-	}
-	
-	public List<String> getFilms() {
-		return films;
-	}
-	
-	public void setFilms(List<String> films) {
-		this.films = films;
-	}
-
-	public Long getNumFilmAppearances() {
-		return Objects.nonNull(films) ? Long.valueOf(films.size()) : 0;
 	}
 
 }

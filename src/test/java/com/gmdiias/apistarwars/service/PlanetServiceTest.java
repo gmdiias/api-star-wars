@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.gmdiias.apistarwars.dto.PlanetDTO;
+import com.gmdiias.apistarwars.dto.PlanetRequestDTO;
 import com.gmdiias.apistarwars.dto.PlanetStarWarsApiDTO;
 import com.gmdiias.apistarwars.entity.Planet;
 import com.gmdiias.apistarwars.exception.ServiceException;
@@ -36,7 +36,7 @@ public class PlanetServiceTest {
 
 	@Test
 	public void createPlanetWithSuccessTest() throws ServiceException {
-		PlanetDTO planetDto = new PlanetDTO();
+		PlanetRequestDTO planetDto = new PlanetRequestDTO();
 		planetDto.setName("Tatooine");
 
 		Planet planetEntity = new Planet();
@@ -54,7 +54,7 @@ public class PlanetServiceTest {
 
 	@Test
 	public void createPlanetWithNameNotFoundInApiSwTest() throws ServiceException {
-		PlanetDTO planetDto = new PlanetDTO();
+		PlanetRequestDTO planetDto = new PlanetRequestDTO();
 		planetDto.setName("Tatooine");
 
 		Planet planetEntity = new Planet();

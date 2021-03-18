@@ -2,14 +2,17 @@ package com.gmdiias.apistarwars.mapper;
 
 import org.mapstruct.Mapper;
 
-import com.gmdiias.apistarwars.dto.PlanetDTO;
+import com.gmdiias.apistarwars.dto.PlanetRequestDTO;
+import com.gmdiias.apistarwars.dto.PlanetResponseDTO;
 import com.gmdiias.apistarwars.entity.Planet;
 
 @Mapper(componentModel="spring")
 public interface PlanetMapper {
 
-	public Planet toPlanet(PlanetDTO dto);
+	public Planet toPlanet(PlanetResponseDTO dto);
 	
-	public PlanetDTO toPlanet(Planet planet);
+	public PlanetResponseDTO toPlanet(Planet planet);
+	
+	public Planet toPlanet(PlanetRequestDTO dto);
 	
 }
