@@ -1,4 +1,4 @@
-package com.gmdiias.apistarwars.webclient;
+package com.gmdiias.apistarwars.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,9 +11,9 @@ import com.gmdiias.apistarwars.dto.PlanetStarWarsApiDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
 
 @Service
-public class StarWarsApiClient {
+public class StarWarsApiClientService {
 
-	private static final Logger LOG = LogManager.getLogger(StarWarsApiClient.class);
+	private static final Logger LOG = LogManager.getLogger(StarWarsApiClientService.class);
 	private static final String URL_SWAPI_API = "https://swapi.dev/api/";
 	private WebClient webClient = WebClient.create(URL_SWAPI_API);
 

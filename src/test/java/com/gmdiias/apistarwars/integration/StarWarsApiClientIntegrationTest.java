@@ -21,7 +21,7 @@ import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
 import com.gmdiias.apistarwars.dto.PageableStarWarsApiDTO;
 import com.gmdiias.apistarwars.dto.PlanetStarWarsApiDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
-import com.gmdiias.apistarwars.webclient.StarWarsApiClient;
+import com.gmdiias.apistarwars.service.StarWarsApiClientService;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
@@ -31,7 +31,7 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 	private MockWebServer mockWebServer;
 
 	@Autowired
-	private StarWarsApiClient starWarsService;
+	private StarWarsApiClientService starWarsService;
 
 	@Autowired
 	private ObjectMapper objectMapper;

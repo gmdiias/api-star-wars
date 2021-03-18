@@ -37,7 +37,7 @@ public class Planet implements Serializable {
 	@Column(name = "UPDATEDATE", nullable = false)
 	private Date updateDate;
 
-	@Column(name = "NAME")
+	@Column(name = "NAME", unique = true)
 	private String name;
 
 	@Column(name = "CLIMATE")

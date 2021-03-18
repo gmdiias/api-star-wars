@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
 import com.gmdiias.apistarwars.dto.PlanetDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
-import com.gmdiias.apistarwars.webclient.StarWarsApiClient;
+import com.gmdiias.apistarwars.service.StarWarsApiClientService;
 import com.gmdiias.apistarwars.dto.PlanetStarWarsApiDTO;
 
 @SpringBootTest
@@ -43,7 +43,7 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 	private ObjectMapper objectMapper;
 
 	@MockBean
-	private StarWarsApiClient planetService;
+	private StarWarsApiClientService planetService;
 
 	@Test
 	@Sql("/dataSetPlanetas.sql")

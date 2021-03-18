@@ -2,7 +2,6 @@ package com.gmdiias.apistarwars.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +16,6 @@ import com.gmdiias.apistarwars.dto.PageableStarWarsApiDTO;
 import com.gmdiias.apistarwars.dto.PlanetDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
 import com.gmdiias.apistarwars.service.PlanetService;
-import com.gmdiias.apistarwars.webclient.StarWarsApiClient;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,11 +25,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @RequestMapping("/planet")
 public class PlanetController {
 
-	@Autowired
-	private PlanetService service;
+	private final PlanetService service;
 	
-	@Autowired
-	private StarWarsApiClient swClient;
+	public PlanetController(PlanetService service) {
+		this.service = service;
+	}
 
 	@GetMapping("/{id}")
 	@ApiResponse(responseCode = "200", description = "Planeta encontrado e retornado com sucesso.")
@@ -39,8 +37,17 @@ public class PlanetController {
 	@Operation(summary = "Busca um planeta através de seu ID.")
 	public ResponseEntity<PlanetDTO> getById(
 			@PathVariable("id") @Parameter(description = "ID do planeta a ser buscado.") Long id) {
-		PlanetDTO planeta = service.getById(id);
-		return ResponseEntity.ok(planeta);
+		PlanetDTO planet = service.getById(id);
+		return ResponseEntity.ok(planet);
+	}
+
+	@GetMapping("name/{search}")
+	@ApiResponse(responseCode = "200", description = "Planeta encontrado e retornado com sucesso.")
+	@ApiResponse(responseCode = "400", description = "Planeta não encontrado no banco de dados.")
+	public ResponseEntity<PlanetDTO> getByName(
+			@PathVariable("search") @Parameter(description = "Nome do planeta a ser buscado.") String name) {
+		PlanetDTO planet = service.getByName(name);
+		return ResponseEntity.ok(planet);
 	}
 
 	@GetMapping
@@ -49,12 +56,12 @@ public class PlanetController {
 	public List<PlanetDTO> findAll() {
 		return service.findAll();
 	}
-	
-	@GetMapping
+
+	@GetMapping("swApi")
 	@ApiResponse(responseCode = "200", description = "Planetas retornados com sucesso.")
 	@Operation(summary = "Busca todos os planetas da API do Star Wars.")
-	public PageableStarWarsApiDTO findAllStarWarsApi() throws ServiceException{
-		return swClient.findAllPlanets();
+	public ResponseEntity<PageableStarWarsApiDTO> findAllStarWarsApi() throws ServiceException {
+		return ResponseEntity.ok(service.findAllInSwApi());
 	}
 
 	@PostMapping
