@@ -24,16 +24,16 @@ public class AdviceController {
 		LOG.error(ex.getMessage(), ex);
 		return ResponseEntity.badRequest().body(ex.getMessage());
 	}
-	
+
 	@ExceptionHandler(ServiceException.class)
 	public ResponseEntity<String> handleException(ServiceException ex) {
 		LOG.error(ex.getMessage(), ex);
 		return ResponseEntity.badRequest().body(ex.getMessage());
 	}
-	
+
 	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
 	public ResponseEntity<String> handleException(SQLIntegrityConstraintViolationException ex) {
 		LOG.error(ex.getMessage(), ex);
-		return ResponseEntity.badRequest().body("Já existe um Planeta cadastrado com esse nome.");
+		return ResponseEntity.badRequest().body("Ja existe um Planeta cadastrado com as caracteristicas informadas.");
 	}
 }

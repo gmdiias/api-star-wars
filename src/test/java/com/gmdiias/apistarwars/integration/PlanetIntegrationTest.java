@@ -56,8 +56,25 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 	}
 
 	@Test
-	public void getPlanetByIdNaoExistenteTest() throws Exception {
-		mvc.perform(get("/planet/{id}", 99)).andExpect(status().isBadRequest());
+	public void getPlanetByIdNotExistTest() throws Exception {
+		mvc.perform(get("/planet/{id}", 99)).andExpect(status().isBadRequest())
+				.andExpect(content().string("Nenhuma entidade localizada com o ID informado."));
+	}
+
+	@Test
+	@Sql("/dataSetPlanetas.sql")
+	public void getPlanetByNameTest() throws Exception {
+		MvcResult response = mvc.perform(get("/planet/name/{name}", "Yavin IV")).andExpect(status().isOk()).andReturn();
+		PlanetDTO planet = objectMapper.readValue(response.getResponse().getContentAsString(), PlanetDTO.class);
+
+		assertEquals(1, planet.getId(), "ID é diferente do informado.");
+		assertEquals("Yavin IV", planet.getName(), "Nome do planeta salvo é diferente do esperado.");
+	}
+
+	@Test
+	public void getPlanetByNameNotExistTest() throws Exception {
+		mvc.perform(get("/planet/name/{name}", "Yavin IV")).andExpect(status().isBadRequest())
+				.andExpect(content().string("Nenhuma entidade localizada com o nome informado."));
 	}
 
 	@Test
@@ -71,7 +88,7 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 	}
 
 	@Test
-	public void postPlanetTest() throws Exception {
+	public void createPlanetTest() throws Exception {
 		PlanetDTO planet = new PlanetDTO();
 		planet.setName("Yavin IV");
 		planet.setClimate("temperate, tropical");
@@ -95,7 +112,29 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 	}
 
 	@Test
-	public void postPlanetWithApiErrorTest() throws Exception {
+	public void createDuplicatedPlanetTest() throws Exception {
+		PlanetDTO planet = new PlanetDTO();
+		planet.setName("Yavin IV");
+
+		PlanetStarWarsApiDTO planetMock = new PlanetStarWarsApiDTO();
+		planetMock.setFilms(Lists.list("http://swapi.dev/api/films/1/", "http://swapi.dev/api/films/2/",
+				"http://swapi.dev/api/films/3/"));
+
+		Mockito.when(planetService.getPlanetByName("Yavin IV")).thenReturn(planetMock);
+
+		mvc.perform(post("/planet/").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(planet)).characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+
+		mvc.perform(post("/planet/").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(planet)).characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(content().string("Ja existe um Planeta cadastrado com as caracteristicas informadas."));
+
+	}
+
+	@Test
+	public void createPlanetWithSwApiErrorTest() throws Exception {
 		PlanetDTO planet = new PlanetDTO();
 		planet.setName("Yavin IV");
 		planet.setClimate("temperate, tropical");
@@ -128,7 +167,6 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 	public void deletePlanetByIdWithEntityNotExistsTest() throws Exception {
 		mvc.perform(delete("/planet/{id}", 1)).andExpect(status().isBadRequest())
 				.andExpect(content().string("Nenhuma entidade localizada com o ID informado."));
-
 	}
 
 }
