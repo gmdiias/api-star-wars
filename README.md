@@ -5,7 +5,7 @@ Este projeto é uma API Rest que fornece endpoins para a criação, remoção e 
 Algumas das tecnologias utilizadas nesse projeto são:
 
 * Docker-compose: Foi utilizado para criação do container com banco de dados MySql e configurações;
-* Swagger: Utilizada para realizar a documentação da API e realizar testes;
+* Swagger: Utilizada para realizar a documentação da API e realizar testes (neste projeto utilizei a documentação através de anotações, porém, normalmente utilizo um arquivo externo);
 * MapStruct: Utilizado para realizar o mapeamento entre o DTO e a entidade Planet;
 * WebCliente: Utilizado para realizar a comunicação com a API do Star Wars;
 * MockWebServer: Utilizado para mockar as requisições externas para os testes automatizados;
@@ -22,4 +22,9 @@ $ ./mvnw spring-boot:run
 3 - Caso queira executar os testes basta executar o seguinte comando:
 $ mvn test
 
-Para verificar os endpoints da API e seus parametros utilize o Swagger através da URL: http://localhost:8080/swagger-ui/#/
+Para verificar os endpoints da API e seus parametros utilize a documentação Swagger através da URL: http://localhost:8080/api/swagger-ui/#/
+
+As requisições devem ser enviadas para: http://localhost:8080/api/
+Segue alguns exemplos:
+Lista Planetas: GET -> http://localhost:8080/api/planet
+Lista Planetas API Externa: GET -> http://localhost:8080/api/planet/externalApi?page=1
