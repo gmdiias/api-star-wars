@@ -27,7 +27,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
 import com.gmdiias.apistarwars.dto.PlanetDTO;
-import com.gmdiias.apistarwars.dto.PlanetSwDTO;
+import com.gmdiias.apistarwars.exception.ServiceException;
+import com.gmdiias.apistarwars.dto.PlanetApDTO;
 import com.gmdiias.apistarwars.service.StarWarsApiClient;
 
 @SpringBootTest
@@ -76,7 +77,7 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 		planet.setClimate("temperate, tropical");
 		planet.setTerrain("jungle, rainforests");
 
-		PlanetSwDTO planetMock = new PlanetSwDTO();
+		PlanetApDTO planetMock = new PlanetApDTO();
 		planetMock.setFilms(Lists.list("http://swapi.dev/api/films/1/", "http://swapi.dev/api/films/2/",
 				"http://swapi.dev/api/films/3/"));
 
@@ -93,6 +94,22 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 	}
 
 	@Test
+	public void postPlanetWithApiErrorTest() throws Exception {
+		PlanetDTO planet = new PlanetDTO();
+		planet.setName("Yavin IV");
+		planet.setClimate("temperate, tropical");
+		planet.setTerrain("jungle, rainforests");
+
+		String errorMessage = "Nenhum planeta encontrado encontrado na API do Star Wars com esse nome.";
+		Mockito.when(planetService.getPlanetByName("Yavin IV")).thenThrow(new ServiceException(errorMessage));
+
+		mvc.perform(post("/planet/").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(planet)).characterEncoding("utf-8")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(content().string(errorMessage));
+	}
+
+	@Test
 	@Sql("/dataSetPlanetas.sql")
 	public void deletePlanetByIdTest() throws Exception {
 		MvcResult result = mvc.perform(get("/planet/{id}", 1)).andExpect(status().isOk()).andReturn();
@@ -104,6 +121,13 @@ public class PlanetIntegrationTest extends ApiStarWarsApplicationTests {
 		mvc.perform(delete("/planet/{id}", 1)).andExpect(status().isOk()).andReturn();
 		mvc.perform(get("/planet/{id}", 1)).andExpect(status().isBadRequest())
 				.andExpect(content().string("Nenhuma entidade localizada com o ID informado."));
+	}
+
+	@Test
+	public void deletePlanetByIdWithEntityNotExistsTest() throws Exception {
+		mvc.perform(delete("/planet/{id}", 1)).andExpect(status().isBadRequest())
+				.andExpect(content().string("Nenhuma entidade localizada com o ID informado."));
+
 	}
 
 }

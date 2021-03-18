@@ -18,8 +18,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmdiias.apistarwars.ApiStarWarsApplicationTests;
-import com.gmdiias.apistarwars.dto.PageableDTO;
-import com.gmdiias.apistarwars.dto.PlanetSwDTO;
+import com.gmdiias.apistarwars.dto.PageableApiDTO;
+import com.gmdiias.apistarwars.dto.PlanetApDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
 import com.gmdiias.apistarwars.service.StarWarsApiClient;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -63,7 +63,7 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
 
-		PageableDTO serverReturn = new PageableDTO();
+		PageableApiDTO serverReturn = new PageableApiDTO();
 		serverReturn.setCount(0l);
 		serverReturn.setResults(Lists.emptyList());
 
@@ -83,17 +83,17 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
 
-		PlanetSwDTO planet = new PlanetSwDTO();
+		PlanetApDTO planet = new PlanetApDTO();
 		planet.setName("Tatooine");
 
-		PageableDTO serverReturn = new PageableDTO();
+		PageableApiDTO serverReturn = new PageableApiDTO();
 		serverReturn.setCount(1l);
 		serverReturn.setResults(Lists.list(planet));
 
 		mockWebServer.enqueue(new MockResponse().setResponseCode(200).addHeader("Content-Type", "application/json")
 				.setBody(objectMapper.writeValueAsString(serverReturn)));
 
-		PlanetSwDTO retorno = starWarsService.getPlanetByName("Tatooine");
+		PlanetApDTO retorno = starWarsService.getPlanetByName("Tatooine");
 		assertNotNull(retorno);
 		assertEquals(planet.getName(), retorno.getName());
 	}
@@ -104,13 +104,13 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 		WebClient webCliente = WebClient.create(mockWebServer.getUrl("/").toString());
 		ReflectionTestUtils.setField(starWarsService, "webClient", webCliente);
 
-		PlanetSwDTO planetTatooiene = new PlanetSwDTO();
+		PlanetApDTO planetTatooiene = new PlanetApDTO();
 		planetTatooiene.setName("Tatooine");
 
-		PlanetSwDTO planet2 = new PlanetSwDTO();
+		PlanetApDTO planet2 = new PlanetApDTO();
 		planetTatooiene.setName("Tat");
 
-		PageableDTO serverReturn = new PageableDTO();
+		PageableApiDTO serverReturn = new PageableApiDTO();
 		serverReturn.setCount(2l);
 		serverReturn.setResults(Lists.list(planetTatooiene, planet2));
 
@@ -133,7 +133,7 @@ public class StarWarsApiClientIntegrationTest extends ApiStarWarsApplicationTest
 		mockWebServer.enqueue(new MockResponse().setStatus("HTTP/1.1 500 Internal server error"));
 
 		Exception exception = assertThrows(ServiceException.class, () -> {
-			starWarsService.getAllPlanets();
+			starWarsService.findAllPlanets();
 		});
 		String messageExpected = "Erro: 500 Internal Server";
 		assertTrue(exception.getMessage().contains(messageExpected));

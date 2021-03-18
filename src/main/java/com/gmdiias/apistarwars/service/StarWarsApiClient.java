@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 
-import com.gmdiias.apistarwars.dto.PageableDTO;
-import com.gmdiias.apistarwars.dto.PlanetSwDTO;
+import com.gmdiias.apistarwars.dto.PageableApiDTO;
+import com.gmdiias.apistarwars.dto.PlanetApDTO;
 import com.gmdiias.apistarwars.exception.ServiceException;
 
 @Service
@@ -17,8 +17,8 @@ public class StarWarsApiClient {
 	private static final String URL_SWAPI_API = "https://swapi.dev/api/";
 	private WebClient webClient = WebClient.create(URL_SWAPI_API);
 
-	public PlanetSwDTO getPlanetByName(String name) throws ServiceException {
-		PageableDTO retorno = realizaRequisicaoWithFilter(name);
+	public PlanetApDTO getPlanetByName(String name) throws ServiceException {
+		PageableApiDTO retorno = performsRequestToExternalApi(name);
 
 		if (retorno.getCount() > 1) {
 			throw new ServiceException("Mais de um planeta encontrado a API do Star Wars com esse nome.");
@@ -28,14 +28,14 @@ public class StarWarsApiClient {
 						"Nenhum planeta encontrado encontrado na API do Star Wars com esse nome."));
 	}
 
-	public PageableDTO getAllPlanets() throws ServiceException {
-		return realizaRequisicaoWithFilter("");
+	public PageableApiDTO findAllPlanets() throws ServiceException {
+		return performsRequestToExternalApi("");
 	}
 
-	private PageableDTO realizaRequisicaoWithFilter(String name) throws ServiceException {
+	private PageableApiDTO performsRequestToExternalApi(String name) throws ServiceException {
 		try {
 			return webClient.get().uri(builder -> builder.path("planets/").queryParam("search", name).build())
-					.retrieve().bodyToMono(PageableDTO.class).block();
+					.retrieve().bodyToMono(PageableApiDTO.class).block();
 		} catch (WebClientException e) {
 			LOG.error("Ocorreu um erro ao realizar a requição. Erro: {}", e.getMessage());
 			throw new ServiceException("Ocorreu um erro ao realizar a requisição. Erro: " + e.getMessage());
